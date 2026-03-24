@@ -62,7 +62,7 @@ python train_q_rag.py \
    max_action_length=220
 ```
 ## Computer resources
-[基于HotpotQA+Musique(combined, GTE embedder) 训练出来的模型](QRAG_combined.zip) Q-RAG文中没有提及他的测试 <br>
+[基于HotpotQA+Musique(combined, GTE embedder) 训练出来的模型](https://huggingface.co/TroyHow/Q-RAG_Test/blob/main/QRAG_combined.zip) Q-RAG文中没有提及他的测试 <br>
 - 训练时长：18:07:48
 - 显卡： Pro 6000 96GB
 - 显存占用：59GB ± 0.5GB
