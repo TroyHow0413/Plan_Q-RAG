@@ -67,6 +67,7 @@ python train_q_rag.py \
 - 显卡： Pro 6000 96GB
 - 显存占用：59GB ± 0.5GB
 ![结束的截图](./img/hotpotqa_mosique_combine_training.png)
+
 HotpotQA_推理  
 - 训练时长：00:12:26
 - 显卡：NVIDIA A100-SXM4-80GB
@@ -79,12 +80,11 @@ LLM Evaluation: Original HotpotQA Modle
 - 显存占用：60GB ± 0.5GB
 ![结束的截图](./img/hotpotqa_original_QwQ-32B_Evaluation.png)
 
-HotpotQA Training With Log with Time As REFERENCE
+HotpotQA Training With [Log with Time](./log_50_3h.txt) As REFERENCE
 
-- 训练时长：1h 10m
+- 训练时长：3h 10m
 - 显卡：NVIDIA A100-SXM4-80GB
-- 显存占用：30GB ± 0.5GB (TBC)
-[详细log看](./log_50_3h.txt)
+- 显存占用：30GB ± 0.5GB (TBC)<br>
 ```bash
 python train_q_rag_logt.py \
    envs=hotpotqa \
