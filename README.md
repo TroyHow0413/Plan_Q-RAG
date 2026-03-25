@@ -36,6 +36,7 @@ python -c "from rl.agents.pqn import PQNActor; print('✅ Q-RAG installed succes
 
 ```
 ### Train: Log with Time
+original 100
 ```bash
 python train_q_rag_logt.py \
    envs=hotpotqa \
@@ -44,7 +45,7 @@ python train_q_rag_logt.py \
    steps_count=10000 \
    batch_size=12 \
    accumulate_grads=8 \
-   eval_interval=50 \ #original 100
+   eval_interval=50 \
    envs_parallel=1 \
    max_action_length=220
 ```
