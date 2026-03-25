@@ -114,5 +114,5 @@ python train_q_rag_logt.py \
 ```
 ![结束的截图](./img/log_train_original_3h.png)
 
-# View Log in Table Format 
+## View Log in Table Format 
 [log_table.md](./log_table.md)
