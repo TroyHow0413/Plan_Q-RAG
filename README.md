@@ -118,7 +118,7 @@ LLM Evaluation: Original HotpotQA Model
 ![结束的截图](./img/hotpotqa_original_QwQ-32B_Evaluation.png)
 
 HotpotQA Training With [Log with Time](./log_50_3h.txt) As REFERENCE
-
+  eval_interval original 100
 - 训练时长：3h 10m
 - 显卡： NVIDIA A100-SXM4-80GB
 - 显存占用：30GB ± 0.5GB (TBC)<br>
@@ -130,7 +130,7 @@ python train_q_rag_logt.py \
    steps_count=10000 \
    batch_size=12 \
    accumulate_grads=8 \
-   eval_interval=50 \ #original 100
+   eval_interval=50 \
    envs_parallel=1 \
    max_action_length=220
 ```
