@@ -61,6 +61,28 @@ python train_q_rag.py \
    envs_parallel=1 \
    max_action_length=220
 ```
+## Sample DATA for checking
+`train_q_rag.py` with Q-RAG original setting, 45:45 mins (NVIDIA A100-SXM4-80GB)
+
+| Steps | Reward | Eval Reward | QF Loss |
+| :----: | :----: | :----: | :----: |
+| 800/800000 | 0.43 | 0.343 | 2.95 |
+| 1600/800000 | 0.173 | 0.0.277 | 0.118 |
+| 2400/800000 | 0.401 | 0.713 | 0.187 |
+| 3200/800000 | 0.637 | 0.793 | 0.136 |
+
+`train_q_rag.py` with `eval_interval = 50` setting, 48:22 mins (NVIDIA A100-SXM4-80GB)
+| Steps | Reward | Eval Reward | QF Loss | Time Used (mins) |
+| :----: | :----: | :----: | :----: | :----: |
+| 800/800000 | 0.402 | 0.367 | 2.14 | NA |
+| 1200/800000 | 0.167 | 0.197 | 1.12 | 19:15 |
+| 1600/800000 | 0.161 | 0.297 | 0.153 | 24:58 |
+| 2000/800000 | 0.267 | 0.507 | 0.106 | 30.21 |
+| 2400/800000 | 0.493 | 0.673 | 0.142 | 36:52 |
+| 2800/800000 | 0.587 | 0.713 | 0.157 | 43:00 |
+| 3200/800000 | 0.65 | 0.77 | 0.141 | 48:22 |
+
+
 ## Computer resources
 [基于HotpotQA+Musique(combined, GTE embedder) 训练出来的模型](https://huggingface.co/TroyHow/Q-RAG_Test/blob/main/QRAG_combined.zip) Q-RAG文中没有提及他的测试 <br>
 - 训练时长：18:07:48
@@ -74,7 +96,7 @@ HotpotQA_推理
 - 显存占用：30GB ± 1GB
 ![结束的截图](./img/hotpotqa_original_Retriever_Evaluation.png)
 
-LLM Evaluation: Original HotpotQA Modle
+LLM Evaluation: Original HotpotQA Model
 - 训练时长：≈1h 10m
 - 显卡：NVIDIA A100-SXM4-80GB
 - 显存占用：60GB ± 0.5GB
@@ -83,7 +105,7 @@ LLM Evaluation: Original HotpotQA Modle
 HotpotQA Training With [Log with Time](./log_50_3h.txt) As REFERENCE
 
 - 训练时长：3h 10m
-- 显卡：NVIDIA A100-SXM4-80GB
+- 显卡： NVIDIA A100-SXM4-80GB
 - 显存占用：30GB ± 0.5GB (TBC)<br>
 ```bash
 python train_q_rag_logt.py \
