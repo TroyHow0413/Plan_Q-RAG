@@ -49,6 +49,19 @@ python train_q_rag_logt.py \
    envs_parallel=1 \
    max_action_length=220
 ```
+Force to use GPU 1
+```bash
+CUDA_VISIBLE_DEVICES=1 python train_q_rag_logt.py \
+   envs=hotpotqa \
+   algo=pqn_e5_hotpotqa \
+   envs.data_path="/home/ai-faculty/workspace/datasets/hotpotqa" \
+   steps_count=10000 \
+   batch_size=12 \
+   accumulate_grads=8 \
+   eval_interval=50 \
+   envs_parallel=1 \
+   max_action_length=220
+```
 ### Original Train
 ```bash
 python train_q_rag.py \
@@ -62,42 +75,6 @@ python train_q_rag.py \
    envs_parallel=1 \
    max_action_length=220
 ```
-## Sample DATA for checking
-`train_q_rag.py` with Q-RAG original setting, 45:45 mins (NVIDIA A100-SXM4-80GB)
-
-| Steps | Reward | Eval Reward | QF Loss |
-| :----: | :----: | :----: | :----: |
-| 800 | 0.43 | 0.343 | 2.95 |
-| 1600 | 0.173 | 0.277 | 0.118 |
-| 2400 | 0.401 | 0.713 | 0.187 |
-| 3200 | 0.637 | 0.793 | 0.136 |
-
-`train_q_rag.py` with `eval_interval = 50` setting, 48:22 mins (NVIDIA A100-SXM4-80GB)
-| Steps | Reward | Eval Reward | QF Loss | Time Used (mins) |
-| :----: | :----: | :----: | :----: | :----: |
-| 800 | 0.402 | 0.367 | 2.14 | NA |
-| 1200 | 0.167 | 0.197 | 1.12 | 19:15 |
-| 1600 | 0.161 | 0.297 | 0.153 | 24:58 |
-| 2000 | 0.267 | 0.507 | 0.106 | 30.21 |
-| 2400 | 0.493 | 0.673 | 0.142 | 36:52 |
-| 2800 | 0.587 | 0.713 | 0.157 | 43:00 |
-| 3200 | 0.65 | 0.77 | 0.141 | 48:22 |
-
-| Eval Interval | Steps | Reward | Eval Reward | QF Loss | Time Used (mins) |
-| :----: | :----: | :----: | :----: | :----: | :----: |
-| 50 | 800 | 0.402 | 0.367 | 2.14 | NA |
-| 50 | 1200 | 0.167 | 0.197 | 1.12 | 19:15 |
-| 50 | 1600 | 0.161 | 0.297 | 0.153 | 24:58 |
-| 50 | 2000 | 0.267 | 0.507 | 0.106 | 30.21 |
-| 50 | 2400 | 0.493 | 0.673 | 0.142 | 36:52 |
-| 50 | 2800 | 0.587 | 0.713 | 0.157 | 43:00 |
-| 50 | 3200 | 0.65 | 0.77 | 0.141 | 48:22 |
-| 100 | 800 | 0.43 | 0.343 | 2.95 | NA |
-| 100 | 1600 | 0.173 | 0.277 | 0.118 | NA |
-| 100 | 2400 | 0.401 | 0.713 | 0.187 | NA |
-| 100 | 3200 | 0.637 | 0.793 | 0.136 | NA |
-
-
 
 ## Computer resources
 [基于HotpotQA+Musique(combined, GTE embedder) 训练出来的模型](https://huggingface.co/TroyHow/Q-RAG_Test/blob/main/QRAG_combined.zip) Q-RAG文中没有提及他的测试 <br>
@@ -136,3 +113,6 @@ python train_q_rag_logt.py \
    max_action_length=220
 ```
 ![结束的截图](./img/log_train_original_3h.png)
+
+# View Log in Table Format 
+[log_table.md](./log_table.md)
