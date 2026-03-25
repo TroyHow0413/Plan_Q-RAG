@@ -1,5 +1,4 @@
-# Sample DATA for checking
-`train_q_rag.py` with `eval_interval = 100` (Original Setting)
+## `train_q_rag.py` with `eval_interval = 100` (Original Setting)
 - 45:45 mins 
 - NVIDIA A100-SXM4-80GB
 
@@ -10,9 +9,10 @@
 | 2400  | 0.401  | 0.713       | 0.187   |
 | 3200  | 0.637  | 0.793       | 0.136   |
 
-`train_q_rag.py` with `eval_interval = 50`
+## `train_q_rag.py` with `eval_interval = 50`
 - 48:22 mins
 - NVIDIA A100-SXM4-80GB
+
 | Steps | Reward | Eval Reward | QF Loss | 已耗时 |
 | :---: | :----: | :---------: | :-----: | :---: |
 |  800  | 0.402  |  0.367      | 2.14    | NA    |
@@ -24,10 +24,11 @@
 | 3200  | 0.65   |  0.77       | 0.141   | 48:22 |
 
 
-`train_q_rag_logt.py` with `eval_interval = 50`
+## `train_q_rag_logt.py` with `eval_interval = 50`
 - 01:19:30
 - NVIDIA GeForce RTX 4090 D 49G
 - Details see [log_50_4090_1h20m.txt](./log_50_4090_1h20m.txt)
+
 | 训练进度 | 完成百分比  |  已耗时   | reward | eval_reward | qf_loss | step  |
 | :-----: | :--------: | :-------: | :----: | :---------: | :-----: | :---: |
 | 100     | 0.1%       | 00:06:04  | 0.380  | 0.567       | 23.104  | 1313  |
