@@ -150,6 +150,8 @@ print(f"[INFO] Log file saved to {log_path}")
 log_file.write(f"Training started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
 log_file.write(f"Total iterations: {total_steps}\n")
 log_file.write("="*100 + "\n")
+log_file.write("|  it   | 完成百分比 | Progress | Time | Reward | Eval Reward | QF loss| Step |\n")
+log_file.write("| :---: | :-------: | :------: | :--: | :----: | :---------: | :----: | :--: |\n")
 # ------------------------------------
 
 # 记录训练开始时间
@@ -181,13 +183,13 @@ for it in progress_bar:
         elapsed_time = time.time() - train_start_time
         avg_time_per_it = elapsed_time / (it + 1)
         remaining_it = total_steps - it - 1
-        remaining_time = remaining_it * avg_time_per_it
-        total_estimated_time = elapsed_time + remaining_time
+        # remaining_time = remaining_it * avg_time_per_it
+        # total_estimated_time = elapsed_time + remaining_time
         
         # 格式化时间
         elapsed_time_str = format_time(elapsed_time)
-        remaining_time_str = format_time(remaining_time)
-        total_time_str = format_time(total_estimated_time)
+        # remaining_time_str = format_time(remaining_time)
+        # total_time_str = format_time(total_estimated_time)
         
         # 计算进度百分比
         progress_pct = (it + 1) / total_steps * 100
@@ -195,18 +197,28 @@ for it in progress_bar:
         train_r_mean = np.mean(train_rewards)
         writer.add_scalar("train r_sum", train_r_mean, step)
         writer.add_scalar("qf_loss", qf_loss, step)
-        writer.add_scalar("training/elapsed_time_hours", elapsed_time/3600, step)
-        writer.add_scalar("training/remaining_time_hours", remaining_time/3600, step)
-        
+        # writer.add_scalar("training/elapsed_time_hours", elapsed_time/3600, step)
+        # writer.add_scalar("training/remaining_time_hours", remaining_time/3600, step)
+        '''
         log_file.write(
             f"{it}/{total_steps} ({progress_pct:.1f}%), "
             f"elapsed_time={elapsed_time_str}, "
-            f"remaining_time={remaining_time_str}, "
-            f"total_estimated={total_time_str}, "
+            # f"remaining_time={remaining_time_str}, "
+            # f"total_estimated={total_time_str}, "
             f"reward={train_r_mean:.3f}, "
             f"eval_reward={last_eval_reward:.3f}, "
             f"qf_loss={float(qf_loss):.3f}, "
             f"step={step}\n"
+        )
+        '''
+        log_file.write(
+            f"| {it} | "
+            f"{progress_pct:.1f}% | "
+            f"{elapsed_time_str} | "
+            f"{train_r_mean:.3f} | "
+            f"{last_eval_reward:.3f} | "
+            f"{float(qf_loss):.3f} | "
+            f"{step} |\n"
         )
 
     # ---- 每 400 it（eval_interval=50×8）：跑 eval，更新 eval_reward ----
@@ -236,8 +248,8 @@ for it in progress_bar:
             "eval_reward": last_eval_reward,
             'qf_loss': qf_loss,
             'step': step,
-            'elapsed': format_time(elapsed_time),
-            'remaining': format_time(remaining_time)
+            # 'elapsed': format_time(elapsed_time),
+            # 'remaining': format_time(remaining_time)
         })
         agent.save(ckpt_last_path)
         #torch.save(agent.state_dict(), ckpt_last_path)
