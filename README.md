@@ -116,7 +116,7 @@ HotpotQA Retrievar Evaluation
 ![结束的截图](./img/hotpotqa_original_Retriever_Evaluation.png)
 
 LLM Evaluation: Original HotpotQA Model
-- 时长：≈1h 10m
+- 时长：1h 10m
 - 显卡：NVIDIA A100-SXM4-80GB
 - 显存占用：60GB ± 0.5GB
 ![结束的截图](./img/hotpotqa_original_QwQ-32B_Evaluation.png)
@@ -142,10 +142,10 @@ HotpotQA Retrievar Evaluation
 ![结束的截图](./img/hotpotqa_4090_50_24h15m_Retrievar_Evaluation.png)
 
 LLM Evaluation: 4090D HotpotQA Model (To be updated)
-- 时长：
+- 时长：1h 10m
 - 显卡：NVIDIA A100-SXM4-80GB
 - [显存占用](/img/LLM_Evaluation_VRAM.png)：79.6 ± 0.1GB
-![4结束的截图](./img/hotpotqa_4090_50_24h15m_LLM_Evaluation.png)
+![结束的截图](./img/hotpotqa_4090_50_24h15m_LLM_Evaluation.png)
 
 
 ## View Log in Table Format 
