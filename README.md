@@ -62,6 +62,30 @@ CUDA_VISIBLE_DEVICES=1 python train_q_rag_logt.py \
    envs_parallel=1 \
    max_action_length=220
 ```
+Zip for easier download
+```bash
+# Server
+tar -cvf - outputs_folder | pigz -6 -p 32 | split -d -b 4G - models.tar.gz.
+# Client
+scp <username>@<ip_address>:/your/file/location/models.tar.gz.* D:\<your\file\location>
+```
+
+E5 HotpotQA Retrievar Evaluation
+```bash
+python eval_retriever.py   \
+   pretrained_path=./runs/QRAG_hotpotqa_4090_24h15m    \
+   num_samples=-1    \
+   +envs.max_steps=2    \
+   +envs.data_path=/home/ai-faculty/workspace/datasets/hotpotqa \
+
+LLM Evaluation HotpotQA Model
+```bash
+python eval_llm_openqa.py \
+     --file_path ./runs/QRAG_hotpotqa_4090_24h15m/eval_seed42.jsonl \
+     --model_name Qwen/QwQ-32B \
+     --output_file_path ./runs/QRAG_hotpotqa_4090_24h15m/llm-answering_eval.json
+```
+
 ### Original Train
 ```bash
 python train_q_rag.py \
@@ -76,6 +100,7 @@ python train_q_rag.py \
    max_action_length=220
 ```
 
+
 ## Computer resources
 [基于HotpotQA+Musique(combined, GTE embedder) 训练出来的模型](https://huggingface.co/TroyHow/Q-RAG_Test/blob/main/QRAG_combined.zip) Q-RAG文中没有提及他的测试 <br>
 - 训练时长：18:07:48
@@ -83,7 +108,7 @@ python train_q_rag.py \
 - 显存占用：59GB ± 0.5GB
 ![结束的截图](./img/hotpotqa_mosique_combine_training.png)
 
-HotpotQA_推理  
+HotpotQA Retrievar Evaluation  
 - 训练时长：00:12:26
 - 显卡：NVIDIA A100-SXM4-80GB
 - 显存占用：30GB ± 1GB
@@ -99,20 +124,28 @@ HotpotQA Training With [Log with Time](./log_50_3h.txt) As REFERENCE
   eval_interval original 100
 - 训练时长：3h 10m
 - 显卡： NVIDIA A100-SXM4-80GB
-- 显存占用：30GB ± 0.5GB (TBC)<br>
-```bash
-python train_q_rag_logt.py \
-   envs=hotpotqa \
-   algo=pqn_e5_hotpotqa \
-   envs.data_path="/workspace/datasets/hotpotqa" \
-   steps_count=10000 \
-   batch_size=12 \
-   accumulate_grads=8 \
-   eval_interval=50 \
-   envs_parallel=1 \
-   max_action_length=220
-```
+- 显存占用：31GB ± 0.5GB (TBC)<br>
 ![结束的截图](./img/log_train_original_3h.png)
+
+HotpotQA Training With [4090D Log with Time](./log_50_4090_full.txt) As REFERENCE
+  eval_interval original 50
+- 训练时长：24:14:16
+- 显卡： NVIDIA 4090D 48GB
+- 显存占用：31.7GB ± 0.5GB (TBC)
+![结束的截图](./img/hotpotqa_4090_50_24h15m.png)
+
+HotpotQA Retrievar Evaluation  
+- 训练时长：00:12:26
+- 显卡：NVIDIA A100-SXM4-80GB
+- 显存占用：30GB ± 0.5GB
+![结束的截图](./img/hotpotqa_4090_50_24h15m_Retrievar_Evaluation.png)
+
+LLM Evaluation: 4090D HotpotQA Model (To be updated)
+- 训练时长：
+- 显卡：
+- 显存占用：
+
+
 
 ## View Log in Table Format 
 [log_table.md](./log_table.md)
