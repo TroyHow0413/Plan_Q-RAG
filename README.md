@@ -76,8 +76,8 @@ python eval_retriever.py   \
    pretrained_path=./runs/QRAG_hotpotqa_4090_24h15m    \
    num_samples=-1    \
    +envs.max_steps=2    \
-   +envs.data_path=/home/ai-faculty/workspace/datasets/hotpotqa \
-
+   +envs.data_path=/home/ai-faculty/workspace/datasets/hotpotqa
+```
 LLM Evaluation HotpotQA Model
 
 ```bash
@@ -129,10 +129,10 @@ HotpotQA Training With [Log with Time](./log_50_3h.txt) As REFERENCE
 ![结束的截图](./img/log_train_original_3h.png)
 
 HotpotQA Training With [4090D Log with Time](./log_50_4090_full.txt) As REFERENCE
-  eval_interval original 50
+  eval_interval 50
 - 训练时长：24:14:16
 - 显卡： NVIDIA 4090D 48GB
-- 显存占用：31.7GB ± 0.5GB (TBC)
+- 显存占用：31.7GB ± 0.5GB 
 ![结束的截图](./img/hotpotqa_4090_50_24h15m.png)
 
 HotpotQA Retrievar Evaluation  
@@ -146,6 +146,13 @@ LLM Evaluation: 4090D HotpotQA Model (To be updated)
 - 显卡：NVIDIA A100-SXM4-80GB
 - [显存占用](/img/LLM_Evaluation_VRAM.png)：79.6 ± 0.1GB
 ![结束的截图](./img/hotpotqa_4090_50_24h15m_LLM_Evaluation.png)
+
+HotpotQA Training With [4090D Log with Time](./log_50_4090_full.txt) As REFERENCE
+  eval_interval = 50 ；  batch_size = 16 ； accumulate_grads=6
+- 训练时长：
+- 显卡： 
+- 显存占用：35.7GB
+![结束的截图](./img/hotpotqa_4090_50_24h15m.png)
 
 
 ## View Log in Table Format 

@@ -1,3 +1,15 @@
+## Retrieval Evaluation Results
+- A100是基于已训练好的原始模型做的做Retrieval Evaluation（与文章中相符）
+- 4090是rerun的模型
+| Model | eval_interval | Mean return | Mean text len | EM | F1 |
+|:-----:|:-------------:|:-----------:|:-------------:|:--:|:--:|
+| 4090 | 50  |  0.879 + 0.326 (std) | 1430.24 | 0.879 | 0.930 |
+| 4090 | 100 |  0.884 ± 0.321 (std) | 1430.24 | 0.884 | 0.933 |
+| A100 | 100 |  0.892 + 0.311 (std) | 1430.24 | 0.892 | 0.936 |
+
+## LLM Evaluation Results
+
+
 ## `train_q_rag.py` with `eval_interval = 100` (Original Setting)
 - 45:45 mins 
 - NVIDIA A100-SXM4-80GB
