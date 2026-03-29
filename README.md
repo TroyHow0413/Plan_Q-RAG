@@ -86,7 +86,15 @@ python eval_llm_openqa.py \
    --model_name Qwen/QwQ-32B \
    --output_file_path ./runs/QRAG_hotpotqa_4090_24h15m/llm-answering_eval.json
 ```
-
+LLM Evaluation with Meta-Llama-3.1-8B-Instruct
+```bash
+CUDA_VISIBLE_DEVICES=0 python eval_llm_openqa_with_planner_chain_of_thought.py    \
+--file_path ./runs/QRAG_hotpotqa_4090_24h15m_50/eval_seed42.jsonl   \
+--model_name Qwen/Qwen2.5-7B-Instruct    \
+--planner_base meta-llama/Meta-Llama-3.1-8B-Instruct    \
+--planner_lora /home/ai-faculty/workspace/planner/llama31_planner_lora_v1/final    \
+--output_file_path ./runs/QRAG_hotpotqa_4090_24h15m_50/llm-answering_llama31planner_eval.json
+```
 ### Original Train
 ```bash
 python train_q_rag.py \
