@@ -7,8 +7,17 @@ unzip hotpotqa+musique.zip -d /workspace/datasets
 cd ..
 rm -rf Hotpotqa_and_Musique
 
+
+# 创建一个planner文件夹在 workspace/planner
+mkdir planner
+cd planner
+# 第一版 musique数据集的planner
+git clone https://huggingface.co/TroyHow/qwen_planner_lora_v2
+# 第二版 修改musique数据集的planner
+git clone https://huggingface.co/TroyHow/qwen_planner_lora_v2_musique_cleaned
+
 git clone -b xmum https://github.com/Patiskey/Q-RAG-1.git
-cd Q-RAG
+cd Q-RAG-1
 # 加载我们训练的模型 （只需要他的eval_seed）
 git clone https://huggingface.co/TroyHow/QRAG_hotpotqa_4090_eval_50
 
@@ -29,7 +38,13 @@ git clone https://huggingface.co/TroyHow/qwen_planner_lora_v2
 # 第二版 修改musique数据集的planner
 git clone https://huggingface.co/TroyHow/qwen_planner_lora_v2_musique_cleaned_v2
 ```
-
+```
+### Crtic Model RL
+```bash
+CUDA_VISIBLE_DEVICES=0,1 python Critic_rl_train.py \
+--train_file ./curriculum_train.jsonl \
+--planner_lora /workspace/planner/qwen_planner_lora_v2
+```
 
 ### LLM Evaluation with Qwen2.5-7B-Instruct
 ```bash
