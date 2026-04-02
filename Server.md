@@ -23,7 +23,11 @@ pip install peft
 # Check environment
 python -c "from rl.agents.pqn import PQNActor; print('✅ Q-RAG installed successfully')"
 
-# 手动拉 Planer 权重 到 /workspace/planner/final 目录下
+# 手动拉 Planer 权重 到 /workspace/planner/ 目录下或者 git clone hf
+# 第一版 musique数据集的planner
+git clone https://huggingface.co/TroyHow/qwen_planner_lora_v2
+# 第二版 修改musique数据集的planner
+git clone https://huggingface.co/TroyHow/qwen_planner_lora_v2_musique_cleaned
 ```
 
 
