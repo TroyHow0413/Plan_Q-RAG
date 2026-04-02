@@ -1,0 +1,33 @@
+{
+  "input_file": "classification_results_full.jsonl",
+  "total_records": 7405,
+  "primary_label_counts": {
+    "no_error": 5264,
+    "prompt_artifact_final_answer": 800,
+    "number_or_date_mismatch": 78,
+    "no_token_overlap": 426,
+    "normalization_mismatch": 19,
+    "cot_leak": 522,
+    "overlong_prediction": 79,
+    "granularity_mismatch": 173,
+    "empty_prediction": 25,
+    "low_token_overlap": 3,
+    "yes_no_format_mismatch": 16
+  },
+  "has_final_answer_error_counts": {
+    "False": 5264,
+    "True": 2141
+  },
+  "has_process_issue_counts": {
+    "True": 6735,
+    "False": 670
+  },
+  "process_issue_type_counts": {
+    "prompt_artifact_in_hops": 3440,
+    "malformed_subquery": 21,
+    "reasoning_drift": 3274
+  },
+  "other_custom_reason_counts": {},
+  "api_error_counts": {},
+  "other_examples": {}
+}
