@@ -10,6 +10,7 @@ rm -rf Hotpotqa_and_Musique
 
 # 创建一个planner文件夹在 workspace/planner
 mkdir planner
+cd planner
 # 第一版 musique数据集的planner
 git clone https://huggingface.co/TroyHow/qwen_planner_lora_v2
 # 第二版 修改musique数据集的planner
