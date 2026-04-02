@@ -38,7 +38,7 @@ git clone https://huggingface.co/TroyHow/qwen_planner_lora_v2
 # 第二版 修改musique数据集的planner
 git clone https://huggingface.co/TroyHow/qwen_planner_lora_v2_musique_cleaned_v2
 ```
-```
+
 ### Crtic Model RL
 ```bash
 CUDA_VISIBLE_DEVICES=0,1 python Critic_rl_train.py \
