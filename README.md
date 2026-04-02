@@ -7,6 +7,7 @@ parent_dir/
 ```
 ### Git datasets for Q-RAG
 ```bash
+cd workspace
 git clone https://huggingface.co/datasets/Q-RAG/Hotpotqa_and_Musique
 cd Hotpotqa_and_Musique
 unzip hotpotqa+musique.zip -d /workspace/datasets
@@ -18,6 +19,9 @@ du -h
 ```bash
 git clone https://github.com/griver/Q-RAG.git
 cd Q-RAG
+# 加载我们训练的模型 （只需要他的eval_seed）
+git clone https://huggingface.co/TroyHow/QRAG_hotpotqa_4090_eval_50
+
 #Only need when you don't have your self-trained hotpotqa model yet
 git clone https://huggingface.co/Q-RAG/qrag-ft-e5-on-hotpotqa
 ```
@@ -26,10 +30,10 @@ git clone https://huggingface.co/Q-RAG/qrag-ft-e5-on-hotpotqa
 # Setup venv
 conda create -n qrag python=3.12 -y
 conda activate qrag
-
 python -m pip install -U pip wheel
 pip install vllm  # pulls compatible PyTorch, Transformers, Triton, etc.
 pip install hydra-core tensorboard rotary-embedding-torch pandas nltk sortedcontainers accelerate datasets
+pip install peft
 
 # Check environment
 python -c "from rl.agents.pqn import PQNActor; print('✅ Q-RAG installed successfully')"
