@@ -27,7 +27,7 @@ python -c "from rl.agents.pqn import PQNActor; print('✅ Q-RAG installed succes
 # 第一版 musique数据集的planner
 git clone https://huggingface.co/TroyHow/qwen_planner_lora_v2
 # 第二版 修改musique数据集的planner
-git clone https://huggingface.co/TroyHow/qwen_planner_lora_v2_musique_cleaned
+git clone https://huggingface.co/TroyHow/qwen_planner_lora_v2_musique_cleaned_v2
 ```
 
 
