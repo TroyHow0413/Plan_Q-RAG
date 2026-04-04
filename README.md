@@ -73,7 +73,7 @@ tar -cvf - outputs_folder | pigz -6 -p 32 | split -d -b 4G - models.tar.gz.
 # Client
 scp <username>@<ip_address>:/your/file/location/models.tar.gz.* D:\<your\file\location>
 ```
-
+## E5 HotpotQA Retrievar Evaluation
 E5 HotpotQA Retrievar Evaluation
 ```bash
 python eval_retriever.py   \
@@ -82,8 +82,20 @@ python eval_retriever.py   \
    +envs.max_steps=2    \
    +envs.data_path=/home/ai-faculty/workspace/datasets/hotpotqa
 ```
-LLM Evaluation HotpotQA Model
+E5 HotpotQA Retiever Evaluation with musique
+```bash
+CUDA_VISIBLE_DEVICES=0 python eval_retriever.py \
+  pretrained_path=./runs/QRAG_hotpotqa_4090_24h15m_50 \
+  num_samples=-1 \
+  +envs=musique \
+  ++envs.max_steps=4 \
+  ++envs.data_path=/home/ai-faculty/workspace/datasets/musique \
+  +max_action_length=110 \
+  +max_action_length_in_memory=110
+```
 
+## LLM Evaluation
+LLM Evaluation HotpotQA Model Original technique
 ```bash
 python eval_llm_openqa.py \
    --file_path ./runs/QRAG_hotpotqa_4090_24h15m/eval_seed42.jsonl \
@@ -99,6 +111,16 @@ CUDA_VISIBLE_DEVICES=0 python eval_llm_openqa_with_planner_chain_of_thought.py  
 --planner_lora /home/ai-faculty/workspace/planner/llama31_planner_lora_v1/final    \
 --output_file_path ./runs/QRAG_hotpotqa_4090_24h15m_50/llm-answering_llama31planner_eval.json
 ```
+LLM Evaluation with Qwen2.5-7B-Instruct and CoT Retireval
+```bash
+CUDA_VISIBLE_DEVICES=0 python eval_llm_openqa_with_planner_chain_of_thought_v2.py    \
+--file_path ./runs/QRAG_hotpotqa_4090_24h15m_50/eval_seed42-old.jsonl   \
+--model_name Qwen/Qwen2.5-7B-Instruct   \
+--planner_base Qwen/Qwen2.5-7B-Instruct    \
+--planner_lora /home/ai-faculty/workspace/planner/qwen_planner_lora_v2_musique_cleaned_v2/final    \
+--output_file_path ./runs/QRAG_hotpotqa_4090_24h15m_50/llm-answering_qwen-planner-clean_eval_CoT_Retires.json
+```
+
 ### Original Train
 ```bash
 python train_q_rag.py \
@@ -114,7 +136,7 @@ python train_q_rag.py \
 ```
 
 
-## Computer resources
+## Computer resources / Test Results
 [基于HotpotQA+Musique(combined, GTE embedder) 训练出来的模型](https://huggingface.co/TroyHow/Q-RAG_Test/blob/main/QRAG_combined.zip) Q-RAG文中没有提及他的测试 <br>
 - 训练时长：18:07:48
 - 显卡： Pro 6000 96GB
@@ -165,6 +187,7 @@ HotpotQA Training With [4090D Log with Time](./log_50_4090_full.txt) As REFERENC
 - 显卡： 
 - 显存占用：35.7GB
 ![结束的截图](./img/hotpotqa_4090_50_24h15m.png)
+
 
 
 ## View Log in Table Format 
