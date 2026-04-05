@@ -2,8 +2,13 @@
 ## Setup Rent GPU
 ```
 parent_dir/
-├── Q-RAG/      ← [Q-RAG](https://github.com/griver/Q-RAG.git)
-└── datasets/   ← [datasets Hotpotqa and Musique](https://huggingface.co/datasets/Q-RAG/Hotpotqa_and_Musique)
+├── Q-RAG/    
+├── planner/     
+|  ├── qwen_planner_lora_v2_musique_cleaned_v2   
+|  └── qwen_planner_lora_v2                      
+└── datasets/ 
+|  ├── hotptqa 
+|  └── musique
 ```
 ### Git datasets for Q-RAG
 ```bash
@@ -137,58 +142,10 @@ python train_q_rag.py \
 
 
 ## Computer resources / Test Results
-[基于HotpotQA+Musique(combined, GTE embedder) 训练出来的模型](https://huggingface.co/TroyHow/Q-RAG_Test/blob/main/QRAG_combined.zip) Q-RAG文中没有提及他的测试 <br>
-- 训练时长：18:07:48
-- 显卡： Pro 6000 96GB
-- 显存占用：59GB ± 0.5GB
-![结束的截图](./img/hotpotqa_mosique_combine_training.png)
+[computer-resources_test-results.md](./computer-resources_test-results.md) 
 
-HotpotQA Retrievar Evaluation  
-- 时长：00:12:26
-- 显卡：NVIDIA A100-SXM4-80GB
-- 显存占用：30GB ± 1GB
-![结束的截图](./img/hotpotqa_original_Retriever_Evaluation.png)
-
-LLM Evaluation: Original HotpotQA Model
-- 时长：1h 10m
-- 显卡：NVIDIA A100-SXM4-80GB
-- 显存占用：60GB ± 0.5GB
-![结束的截图](./img/hotpotqa_original_QwQ-32B_Evaluation.png)
-
-HotpotQA Training With [Log with Time](./log_50_3h.txt) As REFERENCE
-  eval_interval original 100
-- 训练时长：3h 10m
-- 显卡： NVIDIA A100-SXM4-80GB
-- 显存占用：31GB ± 0.5GB (TBC)<br>
-![结束的截图](./img/log_train_original_3h.png)
-
-HotpotQA Training With [4090D Log with Time](./log_50_4090_full.txt) As REFERENCE
-  eval_interval 50
-- 训练时长：24:14:16
-- 显卡： NVIDIA 4090D 48GB
-- 显存占用：31.7GB ± 0.5GB 
-![结束的截图](./img/hotpotqa_4090_50_24h15m.png)
-
-HotpotQA Retrievar Evaluation  
-- 时长：00:12:26
-- 显卡：NVIDIA A100-SXM4-80GB
-- 显存占用：30GB ± 0.5GB
-![结束的截图](./img/hotpotqa_4090_50_24h15m_Retrievar_Evaluation.png)
-
-LLM Evaluation: 4090D HotpotQA Model (To be updated)
-- 时长：1h 10m
-- 显卡：NVIDIA A100-SXM4-80GB
-- [显存占用](/img/LLM_Evaluation_VRAM.png)：79.6 ± 0.1GB
-![结束的截图](./img/hotpotqa_4090_50_24h15m_LLM_Evaluation.png)
-
-HotpotQA Training With [4090D Log with Time](./log_50_4090_full.txt) As REFERENCE
-  eval_interval = 50 ；  batch_size = 16 ； accumulate_grads=6
-- 训练时长：
-- 显卡： 
-- 显存占用：35.7GB
-![结束的截图](./img/hotpotqa_4090_50_24h15m.png)
-
-
+## Server Environment Setup Guide
+[Server.md](./Server.md)
 
 ## View Log in Table Format 
 [log_table.md](./log_table.md)
