@@ -145,7 +145,7 @@ python train_q_rag.py \
 [computer-resources_test-results.md](./computer-resources_test-results.md) 
 
 ## Server Environment Setup Guide
-[Server.md](./Server.md)
+[Server.md](./server.md)
 
 ## View Log in Table Format 
 [log_table.md](./log_table.md)
