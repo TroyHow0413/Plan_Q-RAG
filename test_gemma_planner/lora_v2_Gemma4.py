@@ -6,42 +6,28 @@ from peft import LoraConfig
 from trl import SFTTrainer, SFTConfig
 
 # ================= 核心配置区 =================
-MODEL_ID = "google/gemma-4-E4B-it"
-OUTPUT_DIR = "./gemma_planner_musique_cleaned"
+MODEL_ID = "google/gemma-4-E2B-it"
+OUTPUT_DIR = "./test_gemma_planner/gemma_planner_musique_cleaned"
 
-LOCAL_DATASET_PATH = "./musique_ans_v1.0_train_clean.jsonl"
+LOCAL_DATASET_PATH = "./test_gemma_planner/musique_ans_v1.0_train_clean.jsonl"
 
+# [改动] Gemma-it 系列对 system role 的支持在不同版本有差异。
+# gemma-3/4-it 支持 system message，但若训练时报 "system role not supported"，
+# 可将 system prompt 合并到第一条 user message 中（见下方 format 函数注释）。
 SYSTEM_PROMPT = (
-    "You are an expert multi-hop question planner.\n"
-    "Your task is to decompose a complex, multi-step question into a logical sequence of simple, self-contained sub-questions.\n\n"
-    "Guidelines:\n"
-    "1. Break the question into the minimum number of steps required to find the final answer.\n"
-    "2. Use '#N' (e.g., #1, #2) to refer to the answer of a previous step. \n"
-    "3. Strictly use the '#N' placeholder instead of repeating the full entity name once it has been identified.\n"
-    "4. Each sub-question must be a complete, searchable sentence.\n"
-    "5. Output format: \n"
-    "   Step 1: [Sub-question]\n"
-    "   Step 2: [Sub-question]\n"
-    "   ...\n"
-    "6. For multi-step reasoning (3+ hops), ensure each step logically leads to the next by correctly incrementing the '#N' reference.\n"
+    "You are a multi-hop question planner. "
+    "Given a complex question that requires multiple reasoning steps, "
+    "decompose it into a sequence of simple, self-contained sub-questions. "
+    "Each sub-question should be answerable independently or by referring to "
+    "the answer of a previous step (use '#1', '#2', ... as placeholders). "
+    "Output each sub-question on a new line, prefixed with 'Step N:'."
 )
 # ============================================
 
 
 def format_musique_to_chat(example):
-    """
-    将 MuSiQue 的一条样本转换为 Qwen Chat 所需的 messages 格式。
-
-    MuSiQue question_decomposition 字段结构：
-    [
-        {"id": 1, "question": "...", "answer": "...", "paragraph_support_idx": 0},
-        {"id": 2, "question": "Where was #1 born?", "answer": "...", ...},
-        ...
-    ]
-    只取 question 字段，保留 MuSiQue 原生的 #1/#2 占位符引用风格。
-    """
     question = example["question"]
-    decomposition = example["question_decomposition"]  # list of dicts
+    decomposition = example["question_decomposition"]
 
     steps = []
     for i, step in enumerate(decomposition, start=1):
@@ -53,18 +39,30 @@ def format_musique_to_chat(example):
         {"role": "user",      "content": f"Decompose the following question:\n\n{question}"},
         {"role": "assistant", "content": assistant_output},
     ]
+
+    # [备用方案] 若 apply_chat_template 报 system role 错误，改用下面这段：
+    # messages = [
+    #     {"role": "user", "content": f"{SYSTEM_PROMPT}\n\nDecompose the following question:\n\n{question}"},
+    #     {"role": "assistant", "content": assistant_output},
+    # ]
+
     return {"messages": messages}
 
 
 def main():
     # ── 1. Tokenizer ──────────────────────────────────────────────
-    print("[1/5] 正在加载 Tokenizer...")
+    print("[1/5] Loading Tokenizer...")
+
+    # [改动] Gemma 是标准 HF 模型，不需要 trust_remote_code=True
     tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
 
-    # ✅ 直接复用 eos_token 作为 pad_token，词表大小完全不变
-    # 不需要 add_special_tokens / resize_token_embeddings
-    # 避免产生词表 size mismatch（151643 vs 151680 vs 152064 的问题根源）
-    tokenizer.pad_token    = tokenizer.eos_token
+    # [改动 + Bug修复] Gemma tokenizer 通常已内置 <pad> token（id=0）。
+    # 原 Qwen 代码直接赋值 eos_token，对 Gemma 可能覆盖已有的 pad 设置。
+    # 改为：只在 pad_token 确实缺失时才 fallback 到 eos_token。
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+        print("   [warning] pad_token is None, fallback to eos_token")
+
     tokenizer.padding_side = "right"
 
     print(f"   vocab size      : {len(tokenizer)}")
@@ -73,58 +71,78 @@ def main():
     print(f"   eos_token_id    : {tokenizer.eos_token_id}")
 
     # ── 2. 基础模型 ────────────────────────────────────────────────
-    print("[2/5] 正在加载基础模型 (bfloat16 + sdpa)...")
+    print("[2/5] Loading base model (bfloat16 + sdpa)...")
+
     model = AutoModelForCausalLM.from_pretrained(
         MODEL_ID,
-        torch_dtype=torch.bfloat16,
-        attn_implementation="flash_attention_2", # "sdpa",
-        device_map="auto", #自动分配到可用 GPU
+        dtype=torch.bfloat16,           # [修复] torch_dtype → dtype
+        attn_implementation="sdpa",
+        device_map={"": 0},
     )
 
-    # ✅ 词表没变，只需同步 pad_token_id 到 model config 即可
     model.config.pad_token_id = tokenizer.pad_token_id
-    print(f"   model vocab size : {model.config.vocab_size}  (未改变)")
+
+    # [修复] Gemma4Config 是多模态嵌套 config，vocab_size 在 text_config 子节点下
+    # 用 getattr 做兼容，同时 fallback 到 len(tokenizer)
+    vocab_size = getattr(
+        getattr(model.config, "text_config", model.config),
+        "vocab_size",
+        len(tokenizer),
+    )
+    print(f"   model vocab size : {vocab_size}")
+
+    model.enable_input_require_grads()
 
     # ── 3. LoRA 配置 ───────────────────────────────────────────────
-    print("[3/5] 注入 LoRA 适配器...")
+    print("[3/5] Injecting LoRA adapters...")
+
+    # [修复] 直接枚举语言模型层的完整路径，PEFT 支持精确全路径匹配
+    # 这样完全绕开 vision_tower / audio_tower 的 Gemma4ClippableLinear 问题
+    LORA_TARGET_SUFFIXES = ("q_proj", "k_proj", "v_proj", "o_proj",
+                            "gate_proj", "up_proj", "down_proj")
+
+    target_modules = [
+        name for name, module in model.named_modules()
+        if "language_model" in name
+        and type(module).__name__ == "Linear"          # 只要标准 nn.Linear
+        and name.endswith(LORA_TARGET_SUFFIXES)
+    ]
+    print(f"   LoRA target layers: {len(target_modules)} modules")
+    print(f"   前3个: {target_modules[:3]}")
+    
     peft_config = LoraConfig(
         r=64,
         lora_alpha=128,
-        target_modules=[
-            "q_proj", "k_proj", "v_proj", "o_proj",
-            "gate_proj", "up_proj", "down_proj",
-        ],
+        target_modules=target_modules,
+        # [修复] 直接排除掉视觉和音频塔，PEFT >= 0.10 支持
+        exclude_modules=["vision_tower", "audio_tower"],
         lora_dropout=0.05,
         bias="none",
         task_type="CAUSAL_LM",
     )
 
     # ── 4. 加载 & 处理 MuSiQue 数据集 ─────────────────────────────
-    print("[4/5] 加载并格式化 MuSiQue 数据集...")
+    print("[4/5] Loading and formatting MuSiQue dataset...")
     raw_dataset = load_dataset("json", data_files=LOCAL_DATASET_PATH, split="train")
 
-    # ❶ 只保留有答案的样本
     raw_dataset = raw_dataset.filter(
         lambda x: x["answerable"] is True,
         num_proc=4,
     )
-    print(f"   过滤后可用样本数：{len(raw_dataset)}")
+    print(f"   Available samples after filtering: {len(raw_dataset)}")
 
-    # ❷ 去掉分解步数 < 2 的单跳伪多跳问题
     raw_dataset = raw_dataset.filter(
         lambda x: len(x["question_decomposition"]) >= 2,
         num_proc=4,
     )
-    print(f"   过滤单跳后样本数：{len(raw_dataset)}")
+    print(f"   Available samples after filtering: {len(raw_dataset)}")
 
-    # ❸ 转换为 messages 格式
     dataset = raw_dataset.map(
         format_musique_to_chat,
         num_proc=4,
         remove_columns=raw_dataset.column_names,
     )
 
-    # ❹ 应用 Qwen Chat Template，生成训练用的纯文本 text 字段
     def apply_chat_template(example):
         example["text"] = tokenizer.apply_chat_template(
             example["messages"],
@@ -135,19 +153,18 @@ def main():
 
     dataset = dataset.map(apply_chat_template, num_proc=4)
 
-    # 打印一条样本确认格式
-    print("\n   ── 样本预览 ──")
+    print("\n   ── Sample Preview ──")
     print(dataset[0]["text"][:500])
     print("   ──────────────\n")
 
     # ── 5. SFT Trainer ────────────────────────────────────────────
-    print("[5/5] 配置 SFT Trainer 并启动训练...")
+    print("[5/5] Configuring SFT Trainer and starting training...")
     training_args = SFTConfig(
         output_dir=OUTPUT_DIR,
         dataset_text_field="text",
         max_length=2048,
         per_device_train_batch_size=4,
-        gradient_accumulation_steps=4,      # 等效 batch size = 16（单卡）
+        gradient_accumulation_steps=4,
         learning_rate=2e-4,
         lr_scheduler_type="cosine",
         warmup_steps=100,
@@ -156,6 +173,9 @@ def main():
         save_strategy="epoch",
         bf16=True,
         gradient_checkpointing=True,
+        # [Bug修复] 原代码缺少此项。use_reentrant=True（默认值）在 LoRA + gradient
+        # checkpointing 下会因 non-reentrant autograd 图断裂导致训练崩溃或静默出错。
+        gradient_checkpointing_kwargs={"use_reentrant": False},
         ddp_find_unused_parameters=False,
     )
 
@@ -166,14 +186,14 @@ def main():
         args=training_args,
         processing_class=tokenizer,
     )
-
-    print("开始训练！")
+    
+    print("Starting training!")
     trainer.train()
 
-    print("保存最终的 LoRA 权重...")
+    print("Saving final LoRA weights...")
     trainer.model.save_pretrained(f"{OUTPUT_DIR}/final")
     tokenizer.save_pretrained(f"{OUTPUT_DIR}/final")
-    print("训练完成！")
+    print("Training completed!")
 
 
 if __name__ == "__main__":

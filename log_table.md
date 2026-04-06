@@ -39,7 +39,7 @@
 ## `train_q_rag_logt.py` with `eval_interval = 50`
 - 01:19:30
 - NVIDIA GeForce RTX 4090 D 49G
-- Details see [log_50_4090_1h20m](./log_50_4090_1h20m.txt)
+- Details see [log_50_4090_1h20m](./retriever_training_log/log_50_4090_1h20m.txt)
 
 | 训练进度 | 完成百分比  |  已耗时   | reward | eval_reward | qf_loss | step  |
 | :-----: | :--------: | :-------: | :----: | :---------: | :-----: | :---: |
@@ -88,7 +88,7 @@
 ## `train_q_rag_logt.py` with `eval_interval = 50`
 - 03:09:22
 - NVIDIA A100-SXM4-80GB
-- Details see [log_50_3h](./log_50_3h.txt)
+- Details see [log_50_3h](./retriever_training_log/log_50_3h.txt)
 
 | 训练进度 | 完成百分比  |  已耗时   | reward | eval_reward | qf_loss | step  |
 | :-----: | :--------: | :-------: | :----: | :---------: | :-----: | :---: |
