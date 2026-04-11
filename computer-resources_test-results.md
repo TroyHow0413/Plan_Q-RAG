@@ -31,12 +31,18 @@
 
 ![结束的截图](./img/hotpotqa_4090_50_24h15m.png)
 
-### HotpotQA Retrieval Evaluation 
+### HotpotQA Retrieval Evaluation on HotpotQA
 - 时长：00:12:26
 - 显卡： NVIDIA 4090D 48GB
 - 显存占用：30GB ± 0.5GB
 
 ![结束的截图](./img/hotpotqa_4090_50_24h15m_Retrievar_Evaluation.png)
+
+### HotpotQA Retrieval Evaluation on Musique
+- 时长：
+- 显卡： NVIDIA 4090D 48GB
+- 显存占用：
+![结束的截图](./img/hotpotqa_Retriever_on_Musique_Evaluation.png)
 
 ### LLM Evaluation: 4090D HotpotQA Model (QwQ-32B)
 - 时长：1h 10m
